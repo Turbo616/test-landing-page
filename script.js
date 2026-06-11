@@ -54,9 +54,8 @@ form.addEventListener('submit', async (e) => {
     })
 
     if (res.ok) {
-      feedback.textContent = '提交成功！我们将在 24 小时内与您联系。'
-      feedback.className = 'form-feedback success'
-      form.reset()
+      window.location.href = '/thanks.html'
+      return
     } else {
       const data = await res.json()
       feedback.textContent = data.error || '提交失败，请稍后重试'
