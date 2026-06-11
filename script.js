@@ -2,16 +2,16 @@
 const menuToggle = document.getElementById('menuToggle')
 const nav = document.getElementById('nav')
 menuToggle.addEventListener('click', () => nav.classList.toggle('open'))
-
-// Header shadow on scroll
-const header = document.getElementById('header')
-window.addEventListener('scroll', () => {
-  header.classList.toggle('scrolled', window.scrollY > 20)
-})
-
-// Smooth close nav on link click
 nav.querySelectorAll('a').forEach(link => {
   link.addEventListener('click', () => nav.classList.remove('open'))
+})
+
+// Gallery category filter
+document.querySelectorAll('.cat-btn').forEach(btn => {
+  btn.addEventListener('click', function () {
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'))
+    this.classList.add('active')
+  })
 })
 
 // Form submission
@@ -26,23 +26,23 @@ form.addEventListener('submit', async (e) => {
     name: form.name.value.trim(),
     email: form.email.value.trim(),
     phone: form.phone.value.trim(),
+    company: form.company ? form.company.value.trim() : '',
     message: form.message.value.trim(),
   }
 
-  // Basic validation
   if (!formData.name || !formData.email || !formData.message) {
-    feedback.textContent = '请填写姓名、邮箱和需求描述'
+    feedback.textContent = 'Please fill in name, email and message'
     feedback.className = 'form-feedback error'
     return
   }
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-    feedback.textContent = '请输入有效的邮箱地址'
+    feedback.textContent = 'Please enter a valid email address'
     feedback.className = 'form-feedback error'
     return
   }
 
   submitBtn.disabled = true
-  submitBtn.textContent = '提交中...'
+  submitBtn.textContent = 'Submitting...'
   feedback.textContent = ''
   feedback.className = 'form-feedback'
 
@@ -58,14 +58,14 @@ form.addEventListener('submit', async (e) => {
       return
     } else {
       const data = await res.json()
-      feedback.textContent = data.error || '提交失败，请稍后重试'
+      feedback.textContent = data.error || 'Submission failed, please try again'
       feedback.className = 'form-feedback error'
     }
   } catch {
-    feedback.textContent = '网络错误，请检查网络后重试'
+    feedback.textContent = 'Network error, please try again'
     feedback.className = 'form-feedback error'
   } finally {
     submitBtn.disabled = false
-    submitBtn.textContent = '提交需求'
+    submitBtn.textContent = 'Get An Instant Quote →'
   }
 })

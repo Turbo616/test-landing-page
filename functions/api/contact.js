@@ -1,11 +1,11 @@
 export async function onRequestPost({ request, env }) {
   try {
     const body = await request.json()
-    const { name, email, phone, message } = body
+    const { name, email, phone, company, message } = body
 
     // Validate required fields
     if (!name || !email || !message) {
-      return new Response(JSON.stringify({ error: '请填写姓名、邮箱和需求描述' }), {
+      return new Response(JSON.stringify({ error: 'Please fill in name, email and message' }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' },
       })
@@ -13,7 +13,7 @@ export async function onRequestPost({ request, env }) {
 
     const apiKey = env.RESEND_API_KEY
     if (!apiKey) {
-      return new Response(JSON.stringify({ error: '服务未配置，请联系管理员' }), {
+      return new Response(JSON.stringify({ error: 'Service not configured' }), {
         status: 500,
         headers: { 'Content-Type': 'application/json' },
       })
@@ -31,21 +31,22 @@ export async function onRequestPost({ request, env }) {
         to: [env.RESEND_TO_EMAIL || 'gzouyeedisplay@gmail.com'],
         subject: `【展柜咨询】来自 ${name}`,
         html: `
-          <h2>新的展柜咨询</h2>
+          <h2>New Showcase Inquiry</h2>
           <table style="border-collapse:collapse;width:100%;max-width:500px">
-            <tr><td style="padding:8px 0;color:#666">姓名</td><td>${escapeHtml(name)}</td></tr>
-            <tr><td style="padding:8px 0;color:#666">邮箱</td><td>${escapeHtml(email)}</td></tr>
-            <tr><td style="padding:8px 0;color:#666">电话</td><td>${escapeHtml(phone || '未提供')}</td></tr>
-            <tr><td style="padding:8px 0;color:#666">需求</td><td>${escapeHtml(message)}</td></tr>
+            <tr><td style="padding:8px 0;color:#666">Name</td><td>${escapeHtml(name)}</td></tr>
+            <tr><td style="padding:8px 0;color:#666">Email</td><td>${escapeHtml(email)}</td></tr>
+            <tr><td style="padding:8px 0;color:#666">Phone</td><td>${escapeHtml(phone || 'N/A')}</td></tr>
+            <tr><td style="padding:8px 0;color:#666">Company</td><td>${escapeHtml(company || 'N/A')}</td></tr>
+            <tr><td style="padding:8px 0;color:#666">Message</td><td>${escapeHtml(message)}</td></tr>
           </table>
-          <p style="color:#999;font-size:12px;margin-top:24px">此邮件由臻艺展柜官网表单自动发送</p>
+          <p style="color:#999;font-size:12px;margin-top:24px">This email was sent automatically from the Ouyee Display website contact form.</p>
         `,
       }),
     })
 
     if (!resendResp.ok) {
       const err = await resendResp.json()
-      return new Response(JSON.stringify({ error: `发送失败: ${err.message || '请稍后重试'}` }), {
+      return new Response(JSON.stringify({ error: `Failed to send: ${err.message || 'Please try again later'}` }), {
         status: 500,
         headers: { 'Content-Type': 'application/json' },
       })
@@ -56,7 +57,7 @@ export async function onRequestPost({ request, env }) {
       headers: { 'Content-Type': 'application/json' },
     })
   } catch (e) {
-    return new Response(JSON.stringify({ error: '服务器错误，请稍后重试' }), {
+    return new Response(JSON.stringify({ error: 'Server error, please try again later' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
     })
