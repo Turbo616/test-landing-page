@@ -27,8 +27,8 @@ export async function onRequestPost({ request, env }) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: '臻艺展柜 <noreply@zhenyi-showcase.com>',
-        to: ['hello@zhenyi-showcase.com'],
+        from: env.RESEND_FROM_EMAIL || 'Ouyee Display <inquiry@web.ouyedisplay.com>',
+        to: [env.RESEND_TO_EMAIL || 'gzouyeedisplay@gmail.com'],
         subject: `【展柜咨询】来自 ${name}`,
         html: `
           <h2>新的展柜咨询</h2>
